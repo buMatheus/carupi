@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 
-mongoose.connect('mongodb://localhost/carupi', {useNewUrlParser: true, useUnifiedTopology: true});
+const urlDB = 'mongodb://localhost/carupi';
+
+mongoose.connect(urlDB, {useNewUrlParser: true, useUnifiedTopology: true});
 const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open', function() {
