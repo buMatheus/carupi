@@ -43,4 +43,5 @@
     5 - substitua no código na variavel "urlDB" a url de conexão com seu database
     6 - crie uma tabela com nome cars
     7 - Utilize Isominia para fazer as requisições
+    8 - "yarn start" no console //Be happy
 <br />
