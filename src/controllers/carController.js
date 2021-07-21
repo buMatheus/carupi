@@ -28,30 +28,43 @@ router.delete('/:carId', async (req,res) =>{
     }
 });
 
-router.get('/:carId', async (req,res) =>{
-    //return res.send(console.log(req.body));
-    try{
-        const car = await Car.findById(req.params.carId);
-        if((car != undefined)||(car != null)){
-            return res.status(400).send({error: 'Carro não encontrado'});
-        }else{
-            return res.send({car});
-        }
-        
-    }catch (err){
-        return res.status(400).send({error: 'Carro não encontrado'});
+router.get('/search', async function(req, res) {
+    const {minYear, maxYear, minValue, maxValue} = req.query;
+    const query = await Car.find({  ano: { $gte: minYear, $lte: maxYear}, precoVenda: { $gte: minValue, $lte: maxValue} }).exec();
+    if(query.length !== 0){
+        return res.send(query);
+    }else{
+        return res.status(400).send({error: 'Nenhum carro encontrado'});
     }
+    
+})
+
+router.get('/:carId?', async (req,res) =>{
+    //return res.send(console.log(req.body));
+    if(req.params.carId){
+        try{
+            let car = await Car.findById(req.params.carId);
+            if((car != undefined)&&(car != null)){
+                return res.send({car});
+                
+            }else{
+                return res.status(400).send({error: 'Carro não encontrado'});
+            }
+            
+        }catch (err){
+            return res.status(400).send({error: 'Carro não encontrado'});
+        }
+    }else{
+        try{
+            let cars = await Car.find().populate('car');
+            return res.send({cars});
+        }catch (err){
+            return res.status(400).send({error: 'Error findAll'});
+        }
+    }
+    
 });
 
-router.get('/', async (req,res) =>{
-    //return res.send(console.log("entrei"));
-    try{
-        const cars = await Car.find().populate('car');
-        return res.send({cars});
-    }catch (err){
-        return res.status(400).send({error: 'Error findAll'});
-    }
-});
 
 router.put('/:carId', async (req,res) =>{
     const {marca, modelo, versao, ano, quilometragem, tipoCambio, precoVenda} = req.body;
